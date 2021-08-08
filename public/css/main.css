@@ -1,0 +1,47 @@
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 990px;
+  }
+}
+
+.wraper {
+  width: 100%;
+}
+
+.wraper .header {
+  height: 75px;
+  width: 100%;
+}
+
+.wraper .header .container .title {
+  text-align: center;
+  font-weight: bold;
+}
+
+.sort-selected::after {
+  content: '\2713';
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  margin: 0px 0px 0px 10px;
+  display: inline-block;
+}
+
+.dropdown-menu a {
+  text-decoration: none;
+  color: black;
+}
+
+.dropdown-menu a:hover {
+  text-decoration: none;
+  color: black;
+}
+/*# sourceMappingURL=main.css.map */
