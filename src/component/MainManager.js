@@ -227,7 +227,7 @@ class MainManager extends Component {
                         </div>
                             <div className={!isDisplayForm ? 'col-12' : 'col-8'}>
                             <button type="button" className="btn btn-primary" onClick={this.onToggleForm}>
-                            <span className="fa fa-plus mr-3" />Thêm Công Việc
+                            <span className="fa fa-plus mr-3" />Thêm Công Việcs
                             </button>
                             <button 
                                 type="button" 
