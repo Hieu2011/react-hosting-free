@@ -34,25 +34,7 @@ class MainManager extends Component {
     getGenderid(){
         return this.s4() + this.s4() + '-' + this.s4() + this.s4() + '-' + this.s4()+ this.s4();
     }
-    onGenderData = () =>{
-        var list = [
-            {
-                id: this.getGenderid(),
-                name: 'Lập trình con chó',
-                status: true
-            },
-            {
-                id: this.getGenderid(), 
-                name:'Lập trình trái tim',
-                status: false
-            }
-        ];
-        this.setState({
-            tasks : list
-        });
-        localStorage.setItem('tasks',JSON.stringify(list));
-
-    }
+   
     onToggleForm = () =>{
         if (this.state.taskEditting != null && this.state.isDisplayForm === true) {
             this.setState({
@@ -229,13 +211,7 @@ class MainManager extends Component {
                             <button type="button" className="btn btn-primary" onClick={this.onToggleForm}>
                             <span className="fa fa-plus mr-3" />Thêm Công Việcs
                             </button>
-                            <button 
-                                type="button" 
-                                className="btn btn-warning ml-3"
-                                onClick={this.onGenderData}
-                            >
-                                <span className="fa fa-plus mr-3" />GenderData
-                            </button>
+                           
                             <Control onSearch={this.onSearch} onSort={this.onSort} sortBy={sortBy} sortValue = {sortValue}></Control>
                             <div className="row mt-3">
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
