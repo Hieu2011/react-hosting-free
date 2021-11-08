@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import TaskItem from './TaskItem';
+import { connect } from 'react-redux';
+import * as action from '../actions/index';
+
 class TaskList extends Component {
     constructor(props) {
         super(props);
@@ -10,11 +13,16 @@ class TaskList extends Component {
     }
     onChange = (event)=>{
         var name = event.target.name;
-        var value = event.target.value;
+        var value = event.target.type == 'checkbox' ? event.target.checked : event.target.value;
         this.props.onFilter(
             name ==='filterName' ? value : this.state.filterName,
             name === 'filterStatus' ? value : this.state.filterStatus
         );
+        var filter = {
+            name : name ==='filterName' ? value : this.state.filterName,
+            status : name === 'filterStatus' ? value : this.state.filterStatus
+        }
+        this.props.onfilterTable(filter);
         this.setState({
             [name] : value
         });
@@ -22,10 +30,51 @@ class TaskList extends Component {
     }
 
     render() {
-        var { tasks } = this.props; // this.props.task
+        var { tasks,filterTable,keyword,sort } = this.props; // this.props.task
+        console.log(sort);
+        if(filterTable){
+            if(filterTable.name){
+                tasks = tasks.filter((task)=>{
+                   return task = task.name.toLowerCase().indexOf(filterTable.name) != -1;
+                })
+            }
+            tasks = tasks.filter((task)=>{
+                if(filterTable.status === -1){
+                    return task;
+                }else{
+                    return task.status === (filterTable.status === 1 ? true : false);
+                }
+            });
+        }
+        if(keyword != ''){
+            tasks = tasks.filter((task)=>{
+                return task = task.name.toLowerCase().indexOf(keyword) != -1;
+            })
+        }
+        if(sort.by == 'name'){
+            tasks.sort((a,b) =>{
+                if (a.name > b.name) {
+                    return sort.value;
+                }else if(a.name < b.name){
+                    return -sort.value;
+                } else{
+                    return 0;
+                }
+            });
+        }else{
+            tasks.sort((a,b) =>{
+                if (a.status > b.status) {
+                    return -sort.value;
+                }else if(a.status < b.status){
+                    return sort.value;
+                } else{
+                    return 0;
+                }
+            });
+        }
         var emltask = tasks.map((task,index) => {
             return <TaskItem key={task.id} index={index} task={task}
-             onUpdateStatus = {this.props.onUpdateStatus} onDelete={this.props.onDelete} onUpdate = {this.props.onUpdate}/>
+             />
         });
         return (
             <table className="table table-bordered table-hover">
@@ -58,5 +107,20 @@ class TaskList extends Component {
         );
     }
 }
-
-export default TaskList;
+const mapStatetoProps = (state) =>{
+    return {
+        tasks : state.tasks,
+        filterTable : state.filterTable,
+        keyword : state.search,
+        sort : state.sort
+    }
+}
+const mapDispatchtoProp = (dispatch,props) =>{
+    return {
+        onfilterTable : (filter)=>{
+            dispatch(action.filterTable(filter))
+        }
+        
+    }
+}
+export default connect(mapStatetoProps,mapDispatchtoProp)(TaskList);

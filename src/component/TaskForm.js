@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as action from '../actions/index';
 
 class TaskForm extends Component {
     constructor(props) {
@@ -10,22 +12,24 @@ class TaskForm extends Component {
         }
     }
     componentWillMount(){
-        if (this.props.task) {
+        if (this.props.itemediting) {
             this.setState({
-                id: this.props.task.id,
-                name: this.props.task.name,
-                status: this.props.task.status,
+                id: this.props.itemediting.id,
+                name: this.props.itemediting.name,
+                status: this.props.itemediting.status,
             })
+        }else{
+            this.onClear();
         }
     }
     componentWillReceiveProps(nextprops){
-        if (nextprops && nextprops.task) {
+        if (nextprops && nextprops.itemediting) {
             this.setState({
-                id: nextprops.task.id,
-                name: nextprops.task.name,
-                status: nextprops.task.status
+                id: nextprops.itemediting.id,
+                name: nextprops.itemediting.name,
+                status: nextprops.itemediting.status
             });
-        }else if(!nextprops.task){
+        }else if(!nextprops.itemediting){
             this.setState({
                 id: '',
                 name: '',
@@ -34,7 +38,7 @@ class TaskForm extends Component {
         }
     }
     onClose = ()=>{
-        this.props.onClose();
+        this.props.onCloseForm();
     }
     onChange = (event) =>{
         var name = event.target.name;
@@ -46,9 +50,10 @@ class TaskForm extends Component {
             [name] : value
         });
     }
-    addData = (event)=>{
+    onSaveTask = (event)=>{
         event.preventDefault();
-        this.props.onSubmit(this.state);
+        // this.props.onSubmit(this.state);
+        this.props.onSaveTask(this.state);
         this.onClose();
         this.onClear();
     }
@@ -57,9 +62,9 @@ class TaskForm extends Component {
             name : '',
             status : false
         });
-        this.onClose();
     }
     render() {
+        if (!this.props.isDisplayForm) return '';
         return (
             <div className="panel panel-primary">
                 <div className="panel-heading">
@@ -70,7 +75,7 @@ class TaskForm extends Component {
                     </div>
                 </div>
                 <div className="panel-body">
-                    <form onSubmit={this.addData}>
+                    <form onSubmit={this.onSaveTask}>
                         <div className="form-group">
                             <label>Tên :</label>
                             <input type="text" value={this.state.name} className="form-control" name="name" onChange={this.onChange}/>
@@ -92,4 +97,20 @@ class TaskForm extends Component {
     }
 }
 
-export default TaskForm;
+const mapStatetoProp = (state) => {
+    return {
+        isDisplayForm : state.isDisplayForm,
+        itemediting : state.itemediting
+    }
+}
+const mapDispatchtoProp = (dispatch,props) =>{
+    return {
+        onSaveTask : (task)=> {
+            dispatch(action.SaveTask(task))
+        },
+        onCloseForm : (task)=>{
+            dispatch(action.closeForm())
+        }
+    }
+}
+export default connect(mapStatetoProp,mapDispatchtoProp)(TaskForm);
